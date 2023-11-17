@@ -2,6 +2,8 @@
 
 ## About
 
+Lightweight logger for terminals from [LilDworks](https://www.lildworks.hu).
+
 For further information, please visit the [Official Site](https://www.lildworks.hu/lildtools/ldt-logger/about.html).
 
 ### Reference Documentation
@@ -61,3 +63,8 @@ make e2e
 ```sh
 make build
 ```
+
+---
+
+Have fun,
+  <br>< lild />
