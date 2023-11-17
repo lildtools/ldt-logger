@@ -56,7 +56,8 @@ portable:
 	((echo "[${APP_CODENAME}] portable setup...") && \
 	 (if [ -f ~/.bash_aliases ]; then \
 	    if [ "$(shell cat ~/.bash_aliases | grep ${APP_CMD})" = "" ]; then \
-		  echo "alias ${APP_CMD}=\"${PWD}/dist/${APP_NAME}-${APP_VERSION}.sh\"">>~/.bash_aliases; fi ; fi) && \
+		  echo "alias ${APP_CMD}=\"${PWD}/dist/${APP_NAME}-${APP_VERSION}.sh\"">>~/.bash_aliases; fi ; \
+		fi) && \
 	 (echo "[${APP_CODENAME}] portable setup."))
 
 git-release:
@@ -83,18 +84,6 @@ watch:
 	  done;) && \
 	 (echo "[${APP_CODENAME}] FileWatcher finished."))
 
-usage:
-	((echo "doPrintUsage() {">${SRC_TASKS}doPrintUsage.sh) && \
-	 (echo "echo \"=============================================">>${SRC_TASKS}doPrintUsage.sh) && \
-	 (cat ${RESOURCES}USAGE.txt >>${SRC_TASKS}doPrintUsage.sh) && \
-	 (echo "\"">>${SRC_TASKS}doPrintUsage.sh) && \
-	 (echo "}">>${SRC_TASKS}doPrintUsage.sh))
-
-version:
-	((echo "doPrintVersion() {">${SRC_TASKS}doPrintVersion.sh) && \
-	 (echo "echo \"${APP_NAME} v${APP_VERSION}\"">>${SRC_TASKS}doPrintVersion.sh) && \
-	 (echo "}">>${SRC_TASKS}doPrintVersion.sh))
-
 compile:
 	((if [ -f ${RESOURCES}USAGE.txt ]; then make usage; fi) && \
 	 (if [ -f ${PWD}/VERSION ]; then make version; fi) && \
@@ -106,3 +95,15 @@ compile:
 	 (find ${SRC_TASKS} -name '*.sh' -exec cat "{}" \; >>${DIST_FILE}) && \
 	 (cat ${SRC_APP}runner.sh >>${DIST_FILE}) && \
 	 (chmod 700 ${DIST_FILE}))
+
+usage:
+	((echo "doPrintUsage() {">${SRC_TASKS}doPrintUsage.sh) && \
+	 (echo "echo \"=============================================">>${SRC_TASKS}doPrintUsage.sh) && \
+	 (cat ${RESOURCES}USAGE.txt >>${SRC_TASKS}doPrintUsage.sh) && \
+	 (echo "\"">>${SRC_TASKS}doPrintUsage.sh) && \
+	 (echo "}">>${SRC_TASKS}doPrintUsage.sh))
+
+version:
+	((echo "doPrintVersion() {">${SRC_TASKS}doPrintVersion.sh) && \
+	 (echo "echo \"${APP_NAME} v${APP_VERSION}\"">>${SRC_TASKS}doPrintVersion.sh) && \
+	 (echo "}">>${SRC_TASKS}doPrintVersion.sh))
