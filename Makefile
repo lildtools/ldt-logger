@@ -6,6 +6,7 @@ default: clean build
 .SILENT: clean
 .PHONY:  compile
 .SILENT: e2e
+.SILENT: git-release
 .SILENT: install
 .SILENT: portable
 .SILENT: test
@@ -31,6 +32,18 @@ RESOURCES    := ./src/main/resources/
 TEST_OUT     := ./out/
 
 ###########################################################################
+install:
+	((echo "[${APP_CODENAME}] install...") && \
+	 (apt-get update) && \
+	 (apt-get install -y inotify-tools) && \
+	 (echo "[${APP_CODENAME}] install."))
+
+clean:
+	((echo "[${APP_CODENAME}] clean...") && \
+	 (if [ -d ${DIST} ]; then rm -rf ${DIST}; fi) && \
+	 (if [ -d ${TEST_OUT} ]; then rm -rf ${TEST_OUT}; fi) && \
+	 (echo "[${APP_CODENAME}] clean."))
+
 build:
 	((echo "[${APP_CODENAME}] build...") && \
 	 (if [ ! -d ${DIST} ]; then mkdir ${DIST}; fi) && \
@@ -39,23 +52,6 @@ build:
 	 (echo "[${APP_CODENAME}] compile.") && \
 	 (echo "[${APP_CODENAME}] build."))
 
-clean:
-	((echo "[${APP_CODENAME}] clean...") && \
-	 (if [ -d ${DIST} ]; then rm -rf ${DIST}; fi) && \
-	 (if [ -d ${TEST_OUT} ]; then rm -rf ${TEST_OUT}; fi) && \
-	 (echo "[${APP_CODENAME}] clean."))
-
-e2e:
-	((echo "[${APP_CODENAME}] E2E Tester run all...") && \
-	 (/bin/bash src/test/sh/integration/run-all.sh ${testCase}) && \
-	 (echo "[${APP_CODENAME}] E2E Tester finished."))
-
-install:
-	((echo "[${APP_CODENAME}] install...") && \
-	 (apt-get update) && \
-	 (apt-get install -y inotify-tools) && \
-	 (echo "[${APP_CODENAME}] install."))
-
 portable:
 	((echo "[${APP_CODENAME}] portable setup...") && \
 	 (if [ -f ~/.bash_aliases ]; then \
@@ -63,11 +59,21 @@ portable:
 		  echo "alias ${APP_CMD}=\"${PWD}/dist/${APP_NAME}-${APP_VERSION}.sh\"">>~/.bash_aliases; fi ; fi) && \
 	 (echo "[${APP_CODENAME}] portable setup."))
 
+git-release:
+	((echo "[${APP_CODENAME}] git-release...") && \
+	 (git flow release finish ; git push --all ; git push --tags) && \
+	 (echo "[${APP_CODENAME}] git-release."))
+
 test:
 	((echo "[${APP_CODENAME}] Unit Tester run all...") && \
 	 (if [ -d ${TEST_OUT} ]; then rm -rf ${TEST_OUT}; fi) && \
 	 (/bin/bash src/test/sh/unit/run-all.sh ${unit}) && \
 	 (echo "[${APP_CODENAME}] Unit Tester finished."))
+
+e2e:
+	((echo "[${APP_CODENAME}] E2E Tester run all...") && \
+	 (/bin/bash src/test/sh/integration/run-all.sh ${testCase}) && \
+	 (echo "[${APP_CODENAME}] E2E Tester finished."))
 
 watch:
 	((echo "[${APP_CODENAME}] FileWatcher start... '${PWD}/src/main/**/*'") && \
