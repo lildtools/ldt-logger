@@ -16,7 +16,7 @@ For further reference, please consider the following sections:
 
 These additional references should also help:
 
-* [Ignore files from Git](http://help.github.com/ignore-files/)
+* [Ignore files from Git](https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files)
 * [FileWatcher with InotifyTools](https://github.com/inotify-tools/inotify-tools)
 
 ---
