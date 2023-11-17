@@ -2,14 +2,14 @@
 
 ## About
 
-For further information, please visit the [Official Site](https://www.ldworks.hu/projects/ldtools/works/ldtools-logger/about.html).
+For further information, please visit the [Official Site](https://www.lildworks.hu/lildtools/ldt-logger/about.html).
 
 ### Reference Documentation
 
 For further reference, please consider the following sections:
 
 * [Official GNU Site](https://www.gnu.org/gnu/gnu.html)
-* [Official GNU Documentations](hthttps://www.gnu.org/doc/doc.html)
+* [Official GNU Documentations](https://www.gnu.org/doc/doc.html)
 * [Official Make Documentations](https://www.gnu.org/software/make/manual/make.html)
 
 ### Additional Links
