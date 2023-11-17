@@ -1,6 +1,6 @@
 doPrintUsage() {
 echo "=============================================
-USAGE: ldtl <task> [args]
+USAGE: ldtl <task> "message" [args]
 
 tasks:
   logDebug  -  log debug level messages to the console output
