@@ -1,3 +1,3 @@
 doPrintVersion() {
-echo "ldt-logger v0.6.0"
+echo "ldt-logger v0.7.0"
 }
