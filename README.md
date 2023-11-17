@@ -48,6 +48,12 @@ make watch
 make test
 ```
 
+## E2E
+
+```sh
+make e2e
+```
+
 ---
 
 ## Build
