@@ -79,9 +79,10 @@ make e2e
 make docs
 ```
 
+### Changelog
 
 ```sh
-make build
+make changelog
 ```
 
 ---

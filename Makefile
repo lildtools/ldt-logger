@@ -3,6 +3,7 @@ default: clean build
 
 ###########################################################################
 .SILENT: build
+.SILENT: changelog
 .SILENT: clean
 .PHONY:  compile
 .SILENT: docs-generate
@@ -128,3 +129,12 @@ docs-generate:
 	 (echo "< lild />" >> ${DOCS}/README.txt) && \
 	 (echo "[${APP_CODENAME}] docs."))
 
+changelog:
+	((echo "[${APP_CODENAME}] changelog...") && \
+	 (if [ ! -d ${DOCS} ]; then mkdir ${DOCS}; fi) && \
+	 (echo "# ${APP_NAME}" > ${DOCS}/CHANGELOG.md) && \
+	 (echo "" >> ${DOCS}/CHANGELOG.md) && \
+	 (echo "## Changelog" >> ${DOCS}/CHANGELOG.md) && \
+	 (echo "" >> ${DOCS}/CHANGELOG.md) && \
+	 (git log --pretty="- %s" >> ${DOCS}/CHANGELOG.md) && \
+	 (echo "[${APP_CODENAME}] changelog."))
