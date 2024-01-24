@@ -3,7 +3,6 @@
 ## About
 
 Lightweight logger for terminals from [LilDworks](https://www.lildworks.hu).
-
 For further information, please visit the [Official Site](https://www.lildworks.hu/lildtools/ldt-logger/about.html).
 
 ### Reference Documentation
@@ -50,6 +49,14 @@ make watch
 
 ---
 
+## Build
+
+```sh
+make build
+```
+
+---
+
 ## Test
 
 ```sh
@@ -64,13 +71,21 @@ make e2e
 
 ---
 
-## Build
+## Documentations
+
+### Docs
 
 ```sh
-make build
+make docs
+```
+
+### Changelog
+
+```sh
+make changelog
 ```
 
 ---
 
 Have fun,
-  <br>< lild />
+<br>< lild />
