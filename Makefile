@@ -5,6 +5,7 @@ default: clean build
 .SILENT: build
 .SILENT: clean
 .PHONY:  compile
+.SILENT: docs-generate
 .SILENT: e2e
 .SILENT: git-release
 .SILENT: install
@@ -15,21 +16,25 @@ default: clean build
 .SILENT: watch
 
 ###########################################################################
-APP_NAME     := ldt-logger
-APP_VERSION  := $(shell cat ./VERSION)
-APP_CODENAME := LDTL
-APP_CMD      := ldtl
+APP_NAME        := ldt-logger
+APP_DESCRIPTION := "Lightweight logger for terminals."
+APP_LINK        := "https://lildworks.hu/lildtools/ldt-logger/about.html"
+APP_VERSION     := $(shell cat ./VERSION)
+APP_CODENAME    := LDTL
+APP_CMD         := ldtl
 
-DIST         := ./dist/
-DIST_FILE    := ./dist/${APP_NAME}.sh
+DIST            := ./dist/
+DIST_FILE       := ./dist/${APP_NAME}.sh
 
-SRC          := ./src/
-SRC_APP      := ./src/main/sh/app/
-SRC_TASKS    := ./src/main/sh/tasks/
+DOCS            := ./docs/
 
-RESOURCES    := ./src/main/resources/
+SRC             := ./src/
+SRC_APP         := ./src/main/sh/app/
+SRC_TASKS       := ./src/main/sh/tasks/
 
-TEST_OUT     := ./out/
+RESOURCES       := ./src/main/resources/
+
+TEST_OUT        := ./out/
 
 ###########################################################################
 install:
@@ -41,6 +46,7 @@ install:
 clean:
 	((echo "[${APP_CODENAME}] clean...") && \
 	 (if [ -d ${DIST} ]; then rm -rf ${DIST}; fi) && \
+	 (if [ -d ${DOCS} ]; then rm -rf ${DOCS}; fi) && \
 	 (if [ -d ${TEST_OUT} ]; then rm -rf ${TEST_OUT}; fi) && \
 	 (echo "[${APP_CODENAME}] clean."))
 
@@ -66,15 +72,15 @@ git-release:
 	 (echo "[${APP_CODENAME}] git-release."))
 
 test:
-	((echo "[${APP_CODENAME}] Unit Tester run all...") && \
+	((echo "[${APP_CODENAME}] test...") && \
 	 (if [ -d ${TEST_OUT} ]; then rm -rf ${TEST_OUT}; fi) && \
 	 (/bin/bash src/test/sh/unit/run-all.sh ${unit}) && \
-	 (echo "[${APP_CODENAME}] Unit Tester finished."))
+	 (echo "[${APP_CODENAME}] test."))
 
 e2e:
-	((echo "[${APP_CODENAME}] E2E Tester run all...") && \
+	((echo "[${APP_CODENAME}] e2e...") && \
 	 (/bin/bash src/test/sh/integration/run-all.sh ${testCase}) && \
-	 (echo "[${APP_CODENAME}] E2E Tester finished."))
+	 (echo "[${APP_CODENAME}] e2e."))
 
 watch:
 	((echo "[${APP_CODENAME}] FileWatcher start... '${PWD}/src/main/**/*'") && \
@@ -107,3 +113,18 @@ version:
 	((echo "doPrintVersion() {">${SRC_TASKS}doPrintVersion.sh) && \
 	 (echo "echo \"${APP_NAME} v${APP_VERSION}\"">>${SRC_TASKS}doPrintVersion.sh) && \
 	 (echo "}">>${SRC_TASKS}doPrintVersion.sh))
+
+docs-generate:
+	((echo "[${APP_CODENAME}] docs...") && \
+	 (if [ ! -d ${DOCS} ]; then mkdir ${DOCS}; fi) && \
+	 (echo "    ${APP_NAME}" > ${DOCS}/README.txt) && \
+	 (echo "=========================" >> ${DOCS}/README.txt) && \
+	 (echo "- ${APP_DESCRIPTION}" >> ${DOCS}/README.txt) && \
+	 (echo "-- For more informations about this project, please visit the official site:" >> ${DOCS}/README.txt) && \
+	 (echo "" >> ${DOCS}/README.txt) && \
+	 (echo "|  ${APP_LINK}" >> ${DOCS}/README.txt) && \
+	 (echo "" >> ${DOCS}/README.txt) && \
+	 (echo "Have fun," >> ${DOCS}/README.txt) && \
+	 (echo "< lild />" >> ${DOCS}/README.txt) && \
+	 (echo "[${APP_CODENAME}] docs."))
+
