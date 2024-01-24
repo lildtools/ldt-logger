@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 main() {
     scriptName=$1
@@ -34,10 +34,20 @@ main() {
         printf "  test finished: $(date +"%Y-%m-%d %H:%M:%S.%3N")\n"
     fi
 
+    testReports="$scriptTmp/out/reports"
+    mkdir -p $testReports
     if [ $testResult -ne 0 ]; then
-        printf "%-75s: failed.\n" "$scriptName.test"
+        printf "%-75s: failed.\n" "$scriptName.test" >>$testReports/unit.report
+
+        if [ "$LDT_TEST_E2E_DEBUG_MODE" = "true" ]; then
+            printf "%-75s: failed.\n" "$scriptName.test"
+        fi
     else
-        printf "%-75s: ok.\n" "$scriptName.test"
+        printf "%-75s: ok.\n" "$scriptName.test" >>$testReports/unit.report
+
+        if [ "$LDT_TEST_E2E_DEBUG_MODE" = "true" ]; then
+            printf "%-75s: ok.\n" "$scriptName.test"
+        fi
     fi
 }
 
