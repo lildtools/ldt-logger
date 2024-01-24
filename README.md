@@ -49,6 +49,14 @@ make watch
 
 ---
 
+## Build
+
+```sh
+make build
+```
+
+---
+
 ## Test
 
 ```sh
@@ -63,13 +71,21 @@ make e2e
 
 ---
 
-## Build
+## Documentations
+
+### Docs
 
 ```sh
-make build
+make docs
+```
+
+### Changelog
+
+```sh
+make changelog
 ```
 
 ---
 
 Have fun,
-  <br>< lild />
+<br>< lild />
