@@ -2,9 +2,7 @@
 
 ## About
 
-Lightweight logger for terminals from [LilDworks](https://www.lildworks.hu).
-
-For further information, please visit the [Official Site](https://www.lildworks.hu/lildtools/ldt-logger/about.html).
+Lightweight logger for terminals from [LilDworks](https://www.lildworks.hu), for further information, please visit the [Official Site](https://www.lildworks.hu/lildtools/ldt-logger/about.html).
 
 ### Reference Documentation
 
@@ -89,4 +87,4 @@ make changelog
 ---
 
 Have fun,
-<br>< lild />
+<br />*< lild />*
