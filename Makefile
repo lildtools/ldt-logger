@@ -3,17 +3,22 @@ default: clean build
 
 ###########################################################################
 .SILENT: build
-.SILENT: changelog
 .SILENT: clean
-.PHONY:  compile
+.SILENT: clean-dist
+.SILENT: clean-docs
+.SILENT: clean-out
+.SILENT: compile
+.SILENT: compile-usage
+.SILENT: compile-version
 .SILENT: docs-generate
 .SILENT: e2e
+.SILENT: git-changelog
 .SILENT: git-release
 .SILENT: install
-.SILENT: portable
+.SILENT: install-dependencies
+.SILENT: install-portable
+.SILENT: setup-portable
 .SILENT: test
-.SILENT: usage
-.SILENT: version
 .SILENT: watch
 
 ###########################################################################
@@ -32,68 +37,59 @@ DOCS            := ./docs/
 SRC             := ./src/
 SRC_APP         := ./src/main/sh/app/
 SRC_TASKS       := ./src/main/sh/tasks/
-
-RESOURCES       := ./src/main/resources/
-
-TEST_OUT        := ./out/
+SRC_RESOURCES   := ./src/main/resources/
+SRC_TEST_OUT    := ./out/
 
 ###########################################################################
-install:
-	((echo "[${APP_CODENAME}] install...") && \
-	 (apt-get update) && \
-	 (apt-get install -y inotify-tools) && \
-	 (echo "[${APP_CODENAME}] install."))
-
 clean:
 	((echo "[${APP_CODENAME}] clean...") && \
-	 (if [ -d ${DIST} ]; then rm -rf ${DIST}; fi) && \
-	 (if [ -d ${DOCS} ]; then rm -rf ${DOCS}; fi) && \
-	 (if [ -d ${TEST_OUT} ]; then rm -rf ${TEST_OUT}; fi) && \
+	 (make clean-dist clean-docs clean-out --silent) && \
 	 (echo "[${APP_CODENAME}] clean."))
+
+clean-dist:
+	((echo "[${APP_CODENAME}] clean:dist...") && \
+	 (if [ -d ${DIST} ]; then rm -rf ${DIST}; fi) && \
+	 (echo "[${APP_CODENAME}] clean:dist."))
+
+clean-docs:
+	((echo "[${APP_CODENAME}] clean:docs...") && \
+	 (if [ -d ${DOCS} ]; then rm -rf ${DOCS}; fi) && \
+	 (echo "[${APP_CODENAME}] clean:docs."))
+
+clean-out:
+	((echo "[${APP_CODENAME}] clean:out...") && \
+	 (if [ -d ${SRC_TEST_OUT} ]; then rm -rf ${SRC_TEST_OUT}; fi) && \
+	 (echo "[${APP_CODENAME}] clean:out."))
+
+install:
+	((echo "[${APP_CODENAME}] install...") && \
+	 (make install-dependencies --silent) && \
+	 (echo "[${APP_CODENAME}] install."))
+
+install-dependencies:
+	((echo "[${APP_CODENAME}] install:dependencies...") && \
+	 (apt-get update) && \
+	 (apt-get install -y inotify-tools) && \
+	 (echo "[${APP_CODENAME}] install:dependencies."))
+
+install-portable:
+	((echo 1) && \
+	 ($(shell "if [ -f ~/.bash_aliases ]; then echo true; else echo false; fi")) && \
+	 (echo 2))
+	((echo "[${APP_CODENAME}] install:portable...") && \
+	 (if [ "$(shell if [ -f "~/.bash_aliases" ]; then echo true; else echo false; fi)" = "true" ]; then if [ "$(shell cat ~/.bash_aliases | grep ${APP_CMD})" = "" ]; then echo "alias ${APP_CMD}=\"${PWD}/dist/${APP_NAME}.sh\"">>~/.bash_aliases; fi; fi) && \
+	 (echo "[${APP_CODENAME}] install:portable."))
 
 build:
 	((echo "[${APP_CODENAME}] build...") && \
 	 (if [ ! -d ${DIST} ]; then mkdir ${DIST}; fi) && \
-	 (echo "[${APP_CODENAME}] compile...") && \
-	 (if [ -d ${DIST} ]; then make --silent compile; fi) && \
-	 (echo "[${APP_CODENAME}] compile.") && \
+	 (make --silent compile) && \
 	 (echo "[${APP_CODENAME}] build."))
 
-portable:
-	((echo "[${APP_CODENAME}] portable setup...") && \
-	 (if [ -f ~/.bash_aliases ]; then \
-	    if [ "$(shell cat ~/.bash_aliases | grep ${APP_CMD})" = "" ]; then \
-		  echo "alias ${APP_CMD}=\"${PWD}/dist/${APP_NAME}.sh\"">>~/.bash_aliases; fi ; \
-		fi) && \
-	 (echo "[${APP_CODENAME}] portable setup."))
-
-git-release:
-	((echo "[${APP_CODENAME}] git-release...") && \
-	 (git flow release finish ; git push --all ; git push --tags) && \
-	 (echo "[${APP_CODENAME}] git-release."))
-
-test:
-	((echo "[${APP_CODENAME}] test...") && \
-	 (if [ -d ${TEST_OUT} ]; then rm -rf ${TEST_OUT}; fi) && \
-	 (/bin/bash src/test/sh/unit/run-all.sh ${unit}) && \
-	 (echo "[${APP_CODENAME}] test."))
-
-e2e:
-	((echo "[${APP_CODENAME}] e2e...") && \
-	 (/bin/bash src/test/sh/integration/run-all.sh ${testCase}) && \
-	 (echo "[${APP_CODENAME}] e2e."))
-
-watch:
-	((echo "[${APP_CODENAME}] FileWatcher start... '${PWD}/src/main/**/*'") && \
-	 (make compile) && \
-	 (while inotifywait -q -r -e modify,move,create,delete ./src/main/ >/dev/null; do \
-	    make compile; \
-	  done;) && \
-	 (echo "[${APP_CODENAME}] FileWatcher finished."))
-
 compile:
-	((if [ -f ${RESOURCES}USAGE.txt ]; then make usage; fi) && \
-	 (if [ -f ${PWD}/VERSION ]; then make version; fi) && \
+	((echo "[${APP_CODENAME}] compile...") && \
+	 (if [ -f ${SRC_RESOURCES}USAGE.txt ]; then make compile-usage --silent; fi) && \
+	 (if [ -f ${PWD}/VERSION ]; then make compile-version --silent; fi) && \
 	 (cat ${SRC_APP}main.sh >${DIST_FILE}) && \
 	 (cat ${SRC_APP}parser.sh >>${DIST_FILE}) && \
 	 (cat ${SRC_APP}loader.sh >>${DIST_FILE}) && \
@@ -101,25 +97,48 @@ compile:
 	 (cat ${SRC_APP}router.sh >>${DIST_FILE}) && \
 	 (find ${SRC_TASKS} -name '*.sh' -exec cat "{}" \; >>${DIST_FILE}) && \
 	 (cat ${SRC_APP}runner.sh >>${DIST_FILE}) && \
-	 (chmod 700 ${DIST_FILE}))
+	 (chmod 700 ${DIST_FILE}) && \
+	 (echo "[${APP_CODENAME}] compile."))
 
-usage:
-	((echo "doPrintUsage() {">${SRC_TASKS}doPrintUsage.sh) && \
+compile-usage:
+	((echo "[${APP_CODENAME}] compile:usage...") && \
+	 (echo "doPrintUsage() {">${SRC_TASKS}doPrintUsage.sh) && \
 	 (echo "echo \"=============================================">>${SRC_TASKS}doPrintUsage.sh) && \
-	 (cat ${RESOURCES}USAGE.txt >>${SRC_TASKS}doPrintUsage.sh) && \
+	 (cat ${SRC_RESOURCES}USAGE.txt >>${SRC_TASKS}doPrintUsage.sh) && \
 	 (echo "\"">>${SRC_TASKS}doPrintUsage.sh) && \
-	 (echo "}">>${SRC_TASKS}doPrintUsage.sh))
+	 (echo "}">>${SRC_TASKS}doPrintUsage.sh) && \
+	 (echo "[${APP_CODENAME}] compile:usage."))
 
-version:
-	((echo "doPrintVersion() {">${SRC_TASKS}doPrintVersion.sh) && \
+compile-version:
+	((echo "[${APP_CODENAME}] compile:version...") && \
+	 (echo "doPrintVersion() {">${SRC_TASKS}doPrintVersion.sh) && \
 	 (echo "echo \"${APP_NAME} v${APP_VERSION}\"">>${SRC_TASKS}doPrintVersion.sh) && \
-	 (echo "}">>${SRC_TASKS}doPrintVersion.sh))
+	 (echo "}">>${SRC_TASKS}doPrintVersion.sh) && \
+	 (echo "[${APP_CODENAME}] compile:version."))
+
+watch:
+	((echo "[${APP_CODENAME}] watch:src...") && \
+	 (make compile --silent) && \
+	 (while inotifywait -q -r -e modify,move,create,delete ./src/main/ >/dev/null; do \
+	    make compile --silent; \
+	  done;) && \
+	 (echo "[${APP_CODENAME}] watch:src."))
+
+test:
+	((echo "[${APP_CODENAME}] test:run...") && \
+	 (/bin/bash src/test/sh/unit/run-all.sh ${testUnit}) && \
+	 (echo "[${APP_CODENAME}] test:run."))
+
+e2e:
+	((echo "[${APP_CODENAME}] e2e:run...") && \
+	 (/bin/bash src/test/sh/integration/run-all.sh ${testCase}) && \
+	 (echo "[${APP_CODENAME}] e2e:run."))
 
 docs-generate:
-	((echo "[${APP_CODENAME}] docs...") && \
+	((echo "[${APP_CODENAME}] docs:gen...") && \
 	 (if [ ! -d ${DOCS} ]; then mkdir ${DOCS}; fi) && \
-	 (echo "    ${APP_NAME}" > ${DOCS}/README.txt) && \
-	 (echo "=========================" >> ${DOCS}/README.txt) && \
+	 (echo "        ${APP_NAME}" > ${DOCS}/README.txt) && \
+	 (echo "==========================" >> ${DOCS}/README.txt) && \
 	 (echo "- ${APP_DESCRIPTION}" >> ${DOCS}/README.txt) && \
 	 (echo "-- For more informations about this project, please visit the official site:" >> ${DOCS}/README.txt) && \
 	 (echo "" >> ${DOCS}/README.txt) && \
@@ -127,14 +146,19 @@ docs-generate:
 	 (echo "" >> ${DOCS}/README.txt) && \
 	 (echo "Have fun," >> ${DOCS}/README.txt) && \
 	 (echo "< lild />" >> ${DOCS}/README.txt) && \
-	 (echo "[${APP_CODENAME}] docs."))
+	 (echo "[${APP_CODENAME}] docs:gen."))
 
-changelog:
-	((echo "[${APP_CODENAME}] changelog...") && \
+git-changelog:
+	((echo "[${APP_CODENAME}] git:changelog...") && \
 	 (if [ ! -d ${DOCS} ]; then mkdir ${DOCS}; fi) && \
 	 (echo "# ${APP_NAME}" > ${DOCS}/CHANGELOG.md) && \
 	 (echo "" >> ${DOCS}/CHANGELOG.md) && \
 	 (echo "## Changelog" >> ${DOCS}/CHANGELOG.md) && \
 	 (echo "" >> ${DOCS}/CHANGELOG.md) && \
 	 (git log --pretty="- %s" >> ${DOCS}/CHANGELOG.md) && \
-	 (echo "[${APP_CODENAME}] changelog."))
+	 (echo "[${APP_CODENAME}] git:changelog."))
+
+git-release:
+	((echo "[${APP_CODENAME}] git:release...") && \
+	 (git flow release finish ; git push --all ; git push --tags) && \
+	 (echo "[${APP_CODENAME}] git:release."))
