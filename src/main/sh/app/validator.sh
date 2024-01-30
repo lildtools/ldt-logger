@@ -1,5 +1,4 @@
 validate() {
-    ## validate:logLevel-default
     if [ ! "$ldtl_logLevel_default" = "TRACE" ] &&
         [ ! "$ldtl_logLevel_default" = "DEBUG" ] &&
         [ ! "$ldtl_logLevel_default" = "INFO" ] &&
@@ -10,7 +9,6 @@ validate() {
         exit 500
     fi
 
-    ## validate:logLevel-current
     if [ ! "$LDT_LOGGER_LOGLEVEL" = "" ]; then
         ldtl_logLevel_current=$LDT_LOGGER_LOGLEVEL
     else
@@ -35,7 +33,6 @@ validate() {
         exit 500
     fi
 
-    ## validate:command
     if [ "$ldtl_cmd" = "" ]; then ldtl_cmd=usage; fi
     if [ "$ldtl_cmd" = "-h" ]; then ldtl_cmd=usage; fi
     if [ "$ldtl_cmd" = "--help" ]; then ldtl_cmd=usage; fi

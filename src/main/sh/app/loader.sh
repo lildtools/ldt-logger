@@ -1,5 +1,4 @@
 load() {
-    ## load:variables
     ldtl_cmd=$1
     ldtl_console=echo
     ldtl_logLevel=""
@@ -14,7 +13,6 @@ load() {
 
     ldtl_logMessage="$*"
 
-    ## load:environment
     if [ -f $ldtl_workindDir/.env ]; then
         export $(cat $ldtl_workindDir/.env | xargs)
     fi
