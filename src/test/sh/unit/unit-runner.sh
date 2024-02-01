@@ -34,16 +34,20 @@ main() {
         printf "  test finished: $(date +"%Y-%m-%d %H:%M:%S.%3N")\n"
     fi
 
-    testReports="$scriptTmp/out/reports"
+    testReports="$scriptTmp/docs"
+    reportName=reports.html
+    cellStyle="width:50%;background:gray;color:white;padding:8px 6px"
+    failed="background:red;text-align:center"
+    passed="background:green;text-align:center"
     mkdir -p $testReports
     if [ $testResult -ne 0 ]; then
-        printf "%-75s: failed.\n" "$scriptName.test" >>$testReports/unit.report
+        echo "<tr><td style=\"$cellStyle\">$scriptName.test</td><td style=\"$cellStyle;$failed\">failed.</td></tr>" >>$testReports/$reportName
 
         if [ "$LDT_TEST_E2E_DEBUG_MODE" = "true" ]; then
             printf "%-75s: failed.\n" "$scriptName.test"
         fi
     else
-        printf "%-75s: ok.\n" "$scriptName.test" >>$testReports/unit.report
+        echo "<tr><td style=\"$cellStyle\">$scriptName.test</td><td style=\"$cellStyle;$passed\">ok.</td></tr>" >>$testReports/$reportName
 
         if [ "$LDT_TEST_E2E_DEBUG_MODE" = "true" ]; then
             printf "%-75s: ok.\n" "$scriptName.test"
