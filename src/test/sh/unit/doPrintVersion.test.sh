@@ -1,7 +1,7 @@
 #!/bin/bash
 
 main() {
-    runner=$(realpath $(dirname "${BASH_SOURCE[0]}")/test-runner.sh)
+    runner=$(realpath $(dirname "${BASH_SOURCE[0]}")/unit-runner.sh)
 
     /bin/bash \
         $runner \
