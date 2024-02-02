@@ -1,7 +1,7 @@
 #!/bin/bash
 
 main() {
-    scriptName=$1
+    scriptName="$1"
     scriptFile=$(realpath $(dirname "${BASH_SOURCE[0]}")/../../../main/sh/$scriptName.sh)
     scriptTmp=$(realpath $(dirname "${BASH_SOURCE[0]}")/../../../../)
 
@@ -16,16 +16,19 @@ main() {
         printf "  -----\n"
     fi
     testFile=$scriptTmp/out/$scriptName.out
+    testFileEnvironment="$2"
+    testFileArgs="$3"
     testFileRoot=$(dirname $testFile)
     testFileName=$(basename $testFile)
-    testFileMain="${testFileName%.*}"
+    testFileMain="${testFileName%.*} \$*"
     mkdir -p $testFileRoot
     cp $scriptFile $testFile
-    echo $testFileMain >>$testFile
+    echo "$testFileEnvironment" >>$testFile
+    echo "$testFileMain" >>$testFile
     if [ "$LDT_TEST_UNIT_DEBUG_MODE" = "true" ]; then
-        /bin/bash $testFile
+        /bin/bash $testFile $testFileArgs
     else
-        /bin/bash $testFile >/dev/null
+        /bin/bash $testFile $testFileArgs >/dev/null
     fi
     testResult=$?
     if [ "$LDT_TEST_UNIT_DEBUG_MODE" = "true" ]; then
@@ -55,4 +58,4 @@ main() {
     fi
 }
 
-main $1
+main "$1" "$2" "$3"
