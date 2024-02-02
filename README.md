@@ -34,12 +34,6 @@ These additional references should also help:
 make install
 ```
 
-### Portable
-
-```sh
-make portable
-```
-
 ### Watch
 
 ```sh
