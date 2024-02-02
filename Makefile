@@ -2,24 +2,22 @@
 default: clean build
 
 ###########################################################################
-.SILENT: build
 .SILENT: clean
 .SILENT: clean-dist
 .SILENT: clean-docs
 .SILENT: clean-out
+.SILENT: install
+.SILENT: install-dependencies
+.SILENT: build
 .SILENT: compile
 .SILENT: compile-usage
 .SILENT: compile-version
-.SILENT: docs-generate
+.SILENT: watch
+.SILENT: test
 .SILENT: e2e
+.SILENT: docs-generate
 .SILENT: git-changelog
 .SILENT: git-release
-.SILENT: install
-.SILENT: install-dependencies
-.SILENT: install-portable
-.SILENT: setup-portable
-.SILENT: test
-.SILENT: watch
 
 ###########################################################################
 APP_NAME        := ldt-logger
@@ -71,14 +69,6 @@ install-dependencies:
 	 (apt-get update) && \
 	 (apt-get install -y inotify-tools) && \
 	 (echo "[${APP_CODENAME}] install:dependencies."))
-
-install-portable:
-	((echo 1) && \
-	 ($(shell "if [ -f ~/.bash_aliases ]; then echo true; else echo false; fi")) && \
-	 (echo 2))
-	((echo "[${APP_CODENAME}] install:portable...") && \
-	 (if [ "$(shell if [ -f "~/.bash_aliases" ]; then echo true; else echo false; fi)" = "true" ]; then if [ "$(shell cat ~/.bash_aliases | grep ${APP_CMD})" = "" ]; then echo "alias ${APP_CMD}=\"${PWD}/dist/${APP_NAME}.sh\"">>~/.bash_aliases; fi; fi) && \
-	 (echo "[${APP_CODENAME}] install:portable."))
 
 build:
 	((echo "[${APP_CODENAME}] build...") && \
