@@ -41,6 +41,8 @@ validate() {
     if [ "$ldtl_cmd" = "-v" ]; then ldtl_cmd=version; fi
     if [ "$ldtl_cmd" = "--version" ]; then ldtl_cmd=version; fi
 
+    if [ "$ldtl_logMessage" = "" ]; then ldtl_cmd=usage; fi
+
     if [ ! "$ldtl_cmd" = "version" ] &&
         [ ! "$ldtl_cmd" = "usage" ] &&
         [ ! "$ldtl_cmd" = "logTrace" ] &&
