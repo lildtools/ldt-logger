@@ -6,6 +6,9 @@ main() {
     /bin/bash \
         $runner \
         tasks/doPrintUsage
+
+    if [ ! "$?" -eq 0 ]; then exit 400; fi
+    exit 0
 }
 
 main
