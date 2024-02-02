@@ -18,6 +18,7 @@ main() {
         cmd=$(ls -a $testPath | grep .e2e.sh | xargs -I % echo "$testRunner $testPath/e2e-runner.sh \"%\" ; ")
         eval $cmd
     else
+        export LDT_TEST_E2E_DEBUG_MODE=true
         $testRunner $testPath/e2e-runner.sh "$testCase.e2e.sh"
     fi
     echo "</table>" >>$testReports/$reportName
